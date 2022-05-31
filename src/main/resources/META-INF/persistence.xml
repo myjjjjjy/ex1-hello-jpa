@@ -15,7 +15,7 @@
             <property name="hibernate.format_sql" value="true"/>
             <!-- 버퍼링처럼 모았다가 한번에 쿼리 보내줘는 코드-->
             <property name="hibernate.use_sql_comments" value="true"/>
-            <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
+            <property name="hibernate.hbm2ddl.auto" value="create" />
         </properties>
     </persistence-unit>
 </persistence>

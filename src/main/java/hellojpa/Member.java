@@ -4,31 +4,32 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@SequenceGenerator(name = "member_seq_generater", sequenceName = "member_seq")
 public class Member {
 
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id; // Long타입 쓰는 걸 권장!
 
     //@Column(unique = true, length = 10) // DDL 생성기능. ddl 자동생성. jpa실행 로직에는 영향 안줌.
-    @Column(name="name")
-    private String name;
+    @Column(name="name", nullable = false)
+    private String userName;
 
-    private Integer age;
+    public Long getId() {
+        return id;
+    }
 
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    public String getUserName() {
+        return userName;
+    }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
-
-    @Lob
-    private String description;
-
-    @Transient
-    private int temp; // 메모리에서만 쓰겠다. 임시로 캐시데이터 넣어둘 때 사용.
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public Member(){
     }
