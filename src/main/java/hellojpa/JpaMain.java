@@ -10,7 +10,6 @@ public class JpaMain {
     // EntityManagerFactory는 하나만 생성해서 애플리케이션 전체 공유!
     // EntityManager는 쓰레드 간 공유 절대 안됨. 사용하고 버리기
     // JPA의 모든 데이터 변경은 트랜젝션 안에서 실행하기.
-
     public static void main(String[] args){
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
 
