@@ -23,7 +23,7 @@ public class Team {
     private String name;
 
     @OneToMany(mappedBy = "team") // team으로 맵핑 된 관계란 걸 명시
-    private List<Member> members = new ArrayList<>();
+    private List<Member> members = new ArrayList<>(); 
 
     public Long getId() {
         return id;
