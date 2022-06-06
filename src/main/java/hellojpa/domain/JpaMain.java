@@ -44,12 +44,23 @@ public class JpaMain {
                 System.out.println("m = "+m.getUsername());
             }
 */
-            Order order = new Order();
-            order.addOrderItem(new OrderItem());
+//            Order order = new Order();
+//            order.addOrderItem(new OrderItem());
+//
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setOrder(order);
+//            em.persist(orderItem);
 
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            em.persist(orderItem);
+            Member member = new Member();
+            member.setUsername("member1");
+
+            em.persist(member);
+
+            Team team = new Team();
+            team.setName("teamA");
+            team.getMembers().add(member);
+
+            em.persist(team);
 
             tx.commit();
         }catch (Exception e){

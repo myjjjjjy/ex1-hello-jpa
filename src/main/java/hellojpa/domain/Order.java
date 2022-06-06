@@ -20,6 +20,10 @@ public class Order {
     @JoinColumn(name="member_id")
     private Member member;
 
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
+
     @OneToMany
     @JoinColumn(name="item_id")
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -28,11 +32,6 @@ public class Order {
 
     @Enumerated(EnumType.STRING) // 꼭 String으로!!
     private OrderStatus Status;
-
-    public void addOrderItem(OrderItem orderItem){
-        orderItem.add(orderItem);
-        orderItem.setOrder(this);
-    }
 
     public Long getId() {
         return id;
