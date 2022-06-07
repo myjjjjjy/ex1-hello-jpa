@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Team {
+public class Team extends BaseEntity{
 
     // 양방향 객체 연관관계
     // 객체 연관관계 = 2개. 회원->팀 / 팀->회원

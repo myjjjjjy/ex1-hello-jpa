@@ -3,7 +3,7 @@ package hellojpa.domain;
 import javax.persistence.*;
 
 @Entity
-public class Member {
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // 기본이 auto. 생략된경우도 auto.

@@ -6,7 +6,9 @@ import java.util.List;
 
 // item은 굳이 상관관계 넣을 필요 없음. 아이템 입장에선 어떤 주문으로 실시간으로 팔렸는지 굳이.. 주문서로 찾지 아이템 자체로 찾이 않음.
 @Entity
-public class Item {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn
+public abstract class Item {
     @Id @GeneratedValue
     @Column(name = "item_id")
     private Long id;
