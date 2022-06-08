@@ -51,16 +51,16 @@ public class JpaMain {
 //            orderItem.setOrder(order);
 //            em.persist(orderItem);
 
-            Member member = new Member();
-            member.setUsername("member1");
-
-            em.persist(member);
-
-            Team team = new Team();
-            team.setName("teamA");
-            team.getMembers().add(member);
-
-            em.persist(team);
+//            Member member = new Member();
+//            member.setUsername("member1");
+//
+//            em.persist(member);
+//
+//            Team team = new Team();
+//            team.setName("teamA");
+//            team.getMembers().add(member);
+//
+//            em.persist(team);
 
             tx.commit();
         }catch (Exception e){
