@@ -6,31 +6,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "ORDERS")
 public class Order {
 
     @Id @GeneratedValue
-    @Column(name = "order_id")
+    @Column(name = "ORDER_ID")
     private Long id;
 
-    // @Column(name = "member_id")
-    // private Long memberId;
-
-    @ManyToOne
-    @JoinColumn(name="member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MEMBER_ID")
     private Member member;
 
-    @OneToOne
+    // 오더를 저장하면 자동으로 딜리버리도 저장되게 cascade 설정
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
 
-    @OneToMany
-    @JoinColumn(name="item_id")
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JoinColumn(name="ITEM_ID")
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
 
-    @Enumerated(EnumType.STRING) // 꼭 String으로!!
+    @Enumerated(EnumType.STRING) // 꼭 String 으로!!
     private OrderStatus Status;
 
     public Long getId() {
