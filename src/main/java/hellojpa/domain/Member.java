@@ -1,9 +1,16 @@
 package hellojpa.domain;
 
+import jdk.internal.jimage.ImageStrings;
+import org.hibernate.engine.internal.Cascade;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member extends BaseEntity{
@@ -28,13 +35,39 @@ public class Member extends BaseEntity{
     @Column(name = "USERNAME")
     private String username;
 
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    private Address address;
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID")) // 테이블 만들어서 매핑 후 조인
+    @Column(name = "FOOD_NAME") // 값이 하나고 SET을 내가 정의한 게 아니니까 예외적으로 이것만 명시해서 바꿔주기
+    private Set<String> favoriteFoods = new HashSet<>();
+
+//    @ElementCollection
+//    @CollectionTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+//    private List<Address> addressHistory = new ArrayList<>(); 이게 아니라
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) // 이 방법으로 엔티티 만든 후 해주기
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
+
     // 기간 Period
     @Embedded
     private Period workPeriod;
 
-    // 주소
-    @Embedded
-    private Address homeAddress;
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
 
     public Long getId() {
         return id;
@@ -52,14 +85,6 @@ public class Member extends BaseEntity{
         this.username = username;
     }
 
-    public Period getWorkPeriod() {
-        return workPeriod;
-    }
-
-    public void setWorkPeriod(Period workPeriod) {
-        this.workPeriod = workPeriod;
-    }
-
     public Address getHomeAddress() {
         return homeAddress;
     }
@@ -68,5 +93,24 @@ public class Member extends BaseEntity{
         this.homeAddress = homeAddress;
     }
 
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<AddressEntity> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<AddressEntity> addressHistory) {
+        this.addressHistory = addressHistory;
+    }
+
+    public Period getWorkPeriod() {
+        return workPeriod;
+    }
+
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
 }
 
