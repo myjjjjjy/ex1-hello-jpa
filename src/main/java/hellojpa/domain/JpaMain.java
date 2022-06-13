@@ -59,7 +59,16 @@ public class JpaMain {
             findMember.getAddressHistory().remove(new AddressEntity("old1", "street", "1000"));
             findMember.getAddressHistory().add(new AddressEntity("old1", "street", "1000"));
 
-            tx.commit();
+
+            // JPQL : Java Persistence Query Language. 객체지향 쿼리 언어. 엔티티 중심. SQL을 추상화해서 특정 데이터 베이스에 의존하지 않음.
+            // 결국 SQL로 변환되서 실행 됨.
+            // query.getResultList() : 결과가 하나 이상일 때, 리스트 반환. 결과가 없으면 빈 리스트 반환! (Null point Exception 걱정 안해도됨)
+            // query.getSingleList() : 결과가 딱 하나일 때, 단일 객체 반환
+
+
+
+
+             tx.commit();
         }catch (Exception e){
             tx.rollback();
         }finally {
