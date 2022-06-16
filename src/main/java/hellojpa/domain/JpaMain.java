@@ -65,9 +65,6 @@ public class JpaMain {
             // query.getResultList() : 결과가 하나 이상일 때, 리스트 반환. 결과가 없으면 빈 리스트 반환! (Null point Exception 걱정 안해도됨)
             // query.getSingleList() : 결과가 딱 하나일 때, 단일 객체 반환
 
-
-
-
              tx.commit();
         }catch (Exception e){
             tx.rollback();
