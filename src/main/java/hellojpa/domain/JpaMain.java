@@ -65,6 +65,21 @@ public class JpaMain {
             // query.getResultList() : 결과가 하나 이상일 때, 리스트 반환. 결과가 없으면 빈 리스트 반환! (Null point Exception 걱정 안해도됨)
             // query.getSingleList() : 결과가 딱 하나일 때, 단일 객체 반환
 
+            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                            .setFirstResult(1)
+                                    .setMaxResults(10)
+                                            .getResultList();
+
+            String query ="select m.username, 'hello' , TRUE From Member m" + "where m.type=jpql.MemberType.ADMIN";
+
+            List<Object[]> result2 = em.createQuery(query).getResultList();
+
+            for (Object[] objects : result2){
+                System.out.println("object = " + objects[0]);
+                System.out.println("object = " + objects[1]);
+                System.out.println("object = " + objects[2]);
+            }
+
              tx.commit();
         }catch (Exception e){
             tx.rollback();

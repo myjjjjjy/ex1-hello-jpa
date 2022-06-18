@@ -1,11 +1,6 @@
 package hellojpa.domain;
 
-import jdk.internal.jimage.ImageStrings;
-import org.hibernate.engine.internal.Cascade;
-
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,6 +106,19 @@ public class Member extends BaseEntity{
 
     public void setWorkPeriod(Period workPeriod) {
         this.workPeriod = workPeriod;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", homeAddress=" + homeAddress +
+                ", address=" + address +
+                ", favoriteFoods=" + favoriteFoods +
+                ", addressHistory=" + addressHistory +
+                ", workPeriod=" + workPeriod +
+                '}';
     }
 }
 
