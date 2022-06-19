@@ -1,5 +1,7 @@
 package hellojpa.domain;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ public class Team extends BaseEntity{
     private Long id;
     private String name;
 
+    @BatchSize(size=100) // 이걸 이용하면 테이블이 팀을 페이징쿼리하는데 10개 있으면 팀과 연관된 쿼리가 10번 나가야 하는데 10 + 연관된 레이지가 10번 들어가니까
+    // 이 쿼리 한번에 이거 한번 해서 n+1 이렇게 쓰던가, 글로벌 세팅으로 설정할 수 있음. 실무에서는 걍 글로벌세팅으로 깔고 씀.
     @OneToMany(mappedBy = "team") // team으로 맵핑 된 관계란 걸 명시
     @JoinColumn(name = "TEAM_ID")
     private List<Member> members = new ArrayList<>(); 

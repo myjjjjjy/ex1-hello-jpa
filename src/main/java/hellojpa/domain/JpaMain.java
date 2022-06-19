@@ -1,7 +1,5 @@
 package hellojpa.domain;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -71,12 +69,12 @@ public class JpaMain {
                                     .setMaxResults(10)
                                             .getResultList();
 
-            String query ="select "
-                    +"case when m.age <= 10 then '학생요금'"+
-                    "      when m.age >=60 then '경로요금'"+
-                    "      else '일반요금'"+
-                    "end "+
-                    "from Member m";
+//            String query ="select "
+//                    +"case when m.age <= 10 then '학생요금'"+
+//                    "      when m.age >=60 then '경로요금'"+
+//                    "      else '일반요금'"+
+//                    "end "+
+//                    "from Member m";
 
             String query2 = "select coalesce(m.username, '이름 없는 회원') " + "from Member m";
             String query3 = "select NULLIF(m.username, '관리자') " + "from Member m";
@@ -98,12 +96,56 @@ public class JpaMain {
             String query5 = "select t.members From Team t";
             Collection result3 = em.createQuery(query5, Collection.class).getResultList();
 
-            List<Object[]> result2 = em.createQuery(query).getResultList();
+            // List<Object[]> result2 = em.createQuery(query).getResultList();
+//
+//            for (Object[] objects : result2){
+//                System.out.println("object = " + objects[0]);
+//                System.out.println("object = " + objects[1]);
+//                System.out.println("object = " + objects[2]);
+//            }
 
-            for (Object[] objects : result2){
-                System.out.println("object = " + objects[0]);
-                System.out.println("object = " + objects[1]);
-                System.out.println("object = " + objects[2]);
+            // fetch join 아주 중요!!!!!!
+            // JPQL에서 성능 최적화를 위해 제공하는 기능. 연관된 엔티티나 컬렉션을 SQL 한 번에 함께 조회하는 기능.
+            // JPQL - select m from Member m join fetch m.team
+            // SQL  - select m.*, t.* from member m inner join team t on m.team_id =  t.id
+            // 중복제거 - distinct (SQL에 distinct 추가, 애플리케이션에서 엔티티 중복 제거) -> 같은 식별자를 가진 Team 엔티티 제거
+            // 페치 초인 대상에는 별칭 안주는  게 관례인데 잘~~~쓰면 좋을 때도 있음. 하이버네이트는 가능, 가급적 사용 지양하기
+            // 둘 이상의 컬렉션은 페치조인 불가.
+            // 컬렉션을 페치조인하면 페이징 API (setFirstResult, setMacResults)사용 불가.
+            // - 일대일, 다대다 같은 단일 값 연관 필드들은 페치 조인해도 페이징 가능
+            // - 하이버네이트는 경고 로그를 남기고 메모리에서 페이징 (매우위험!!! 절대 쓰지 말자!!)
+            // Warning : firstResult/maxResults specified with collection fetch; applying in memory!
+            // 연관된 엔티티들을 SQL 한 번으로 조회 - 성능 최절화
+            // 엔티티에 직접 적용하는 글로벌 로딩 전략보다 우선함
+            // - @OneToMany(fetch = FetchType.LAZY) // 글로벌 로딩 전략
+            // 실무에서는 글로벌 로딩 전략은 모두 지연 로딩
+            // 최적화가 꼭 필요한 곳은 페치 조인 적용 (n+1)터지는 곳만! => 성능문제 해결가능. 복잡한 view 빼고 웬만한 건 다 됨.
+            // 페치조인은 객체 그래프를 유지할 떄 사용하는 효과적
+            // 여러 테이블을 조인해서 엔티티가 가진 모양이 아닌 전혀 다른 결과를 내야 하면, 페치 조인보다는 일반 조인을 사용하고 필요한 데이터들만 조회해서 DTO로 반환하는 것이 효과적
+
+            Team team1 = new Team();
+            team1.setName("아스널");
+            em.persist(team1);
+
+            Member member1 = new Member();
+            member1.setUsername("손흥민");
+            em.persist(member1);
+
+            String query6 = "select t from Team t join fetch t.members";
+            String query7 = "select distinct t from Team t join fetch t.members where t.name = '아스널'";
+            List<Member> members = em.createQuery(query6, Member.class).getResultList();
+
+            List<Team> result4 = em.createQuery(query7, Team.class)
+                    .setFirstResult(0)
+                    .setMaxResults(2)
+                    .getResultList();
+
+            for (Team team : result4){
+                System.out.println("team = "+team.getName()+"|members="+team.getMembers().size());
+//                for (Member member1 : team.getMembers()){
+//                    System.out.println("-> member =  "+member1);
+//                    => 성능이 안나옴. 페이징이 들어가면 페치조인 안되니까 이 때 Team 클래스에서 @BatchSize(size=100) size는 1000 이하로 적당히 크게 설정.
+//                }
             }
 
              tx.commit();
