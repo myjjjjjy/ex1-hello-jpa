@@ -70,7 +70,18 @@ public class JpaMain {
                                     .setMaxResults(10)
                                             .getResultList();
 
-            String query ="select m.username, 'hello' , TRUE From Member m" + "where m.type=jpql.MemberType.ADMIN";
+            String query ="select "
+                    +"case when m.age <= 10 then '학생요금'"+
+                    "      when m.age >=60 then '경로요금'"+
+                    "      else '일반요금'"+
+                    "end "+
+                    "from Member m";
+
+            String query2 = "select coalesce(m.username, '이름 없는 회원') " + "from Member m";
+            String query3 = "select NULLIF(m.username, '관리자') " + "from Member m";
+
+            // coalesce : 하나씩 조회에서 Null이 아니면 반환
+            // nullif : 두 값이 같으면 Null, 다르면 첫번째 값 반환
 
             List<Object[]> result2 = em.createQuery(query).getResultList();
 
