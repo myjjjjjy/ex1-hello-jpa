@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -80,8 +81,22 @@ public class JpaMain {
             String query2 = "select coalesce(m.username, '이름 없는 회원') " + "from Member m";
             String query3 = "select NULLIF(m.username, '관리자') " + "from Member m";
 
+            String query4 = "select function('group_concat', m.username) From Member m";
+
             // coalesce : 하나씩 조회에서 Null이 아니면 반환
             // nullif : 두 값이 같으면 Null, 다르면 첫번째 값 반환
+
+            // 상태필드 : (state field) 단순히 값을 저장하기 위한 필드 (ex. m.username) 경로탐색의 끝, 탐색 x
+            // 연관필드 : (association field) 연관관계를 위한 필드
+            // - 단일 값 연관 필드 : @ManyToOne, @OneToMany, 대상이 엔티티(ex. m.team)
+            // - 단일 값 연관 경로 : 묵시적 내부 조인 (inner join) 발생,  탐색 o
+            // - 컬렉션 값 연관 필드 : @OneToMany, @ManyToMany, 대상이 컬렉션(ex. m.orders)
+            // - 컬렉션 값 연관 경로 : 묵시적 내부 조인 발생, 탐색 x , FROM 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능,
+            // 묵시적 아예 안쓰는 걸 추천, 모두 명시적 조인으로!! -> 묵시적 조인은 조인이 일어나는상황을 한 눈에 파악하기 어려움.
+
+            // 컬렉션 자체를 지정하는 거기 때문에 size정도만 가져올 수 있음.
+            String query5 = "select t.members From Team t";
+            Collection result3 = em.createQuery(query5, Collection.class).getResultList();
 
             List<Object[]> result2 = em.createQuery(query).getResultList();
 
