@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@NamedQuery( // name = 은 관례상 엔티티명.~~~
+        name = "Member.findByUsername",
+        query = "select m from Member m where m.username = :username"
+        // 여기서 오타 나면 돌아가긴 하는데 실행 시점에서 QuerySyntaxException 에러남 : ___ is not mapped []
+)
 public class Member extends BaseEntity{
 
     /*

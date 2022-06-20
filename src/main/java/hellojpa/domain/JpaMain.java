@@ -148,6 +148,32 @@ public class JpaMain {
 //                }
             }
 
+            // TYPE : 조회 대상을 특정 자식으로 한정.
+            // TREAT : 자바의 타입 캐스팅과 유사. 상속 구조에서 부모 타입을 특정 자식 타입으로 다룰 때 사용. FROM, WHERE 절에서 사용 가능.
+
+            // 엔티티 직접 사용 - 기본 키 값 : JPQL에서 엔티티를 직접 사용하면 SQL에서 해당 엔티티의 기본 키 값 사용.
+            // - JPQL : select count(m.id) from Member m => 엔티티의 아이디를 사용
+            //          select count(m) from Member m => 엔티티를 직접 사용
+            // - SQL (JPQL 둘다 같은 다음 SQL) 실행 : select count(m.id) as cnt from Member m
+
+            // Named 쿼리 - 정적 쿼리 : 미리 정의해서 이름을 부여해두고 사용하는 JPQL. 어노테이션, XML에 정의,
+            // 애플리케이션 로딩 시점에 초기화 후 재사용. 애플맄테이션 로딩 시점에 쿼리를 검증. (중요)
+            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class).setParameter("username", "회원1").getResultList();
+            for (Member member7 : resultList){
+                System.out.println("member = "+member7);
+            }
+
+            // 벌크 연산 : 재고가 10개 미만인 모든 상품의 가격을 10% 상승하려면?
+            //           JPA 변경 감지 기능으로 실행하려면 너무 많은 SQL 실행해야함
+            //           ( 1. 재고가 10개 미만 상품 리스트로 조회 2. 상품 엔티티 가격 10% 증가 3. 트랜젝션 커밋 시점에 변경 감지 동작 )
+            //           변경된 데이터가 100건이라면 100번의 UPDATE SQL 실행해야함
+            // => 쿼리 한 번으로 여러 테이블 로우 변경 (엔티티) , executeUpdate()의 결과는 영향받은 엔티티 수 반환.
+            // UPDATE, DELETE 지원, INSERT (insert into ... select, 하이버네이트 지원)
+            // 영속성 컨텍스트를 무시하고 데이터베이스에 직접 쿼리. 벌트 연산을 먼저 실행, 벌크 연산 수행 후 영속성 컨텍스트 초기화. => FLUSH 자동 호출
+
+            em.createQuery("update Member m set m.username = '주연'").executeUpdate();
+
+
              tx.commit();
         }catch (Exception e){
             tx.rollback();
